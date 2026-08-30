@@ -246,6 +246,11 @@ function drawScene(numComponents){
   );
 }
 
+function adaptBresenhanToPixel(x, y) {
+  const [webglX, webglY] = pixelToWebGL(x, y);
+  addPixel(webglX, webglY);
+}
+
 function bresenham(px1, py1, px2, py2) {
   let components = 1;
 
@@ -260,40 +265,27 @@ function bresenham(px1, py1, px2, py2) {
   const sx = x1 < x2 ? 1 : -1;
   const sy = y1 < y2 ? 1 : -1;
 
-  function adaptBresenhanToPixel(x, y) {
-    const [webglX, webglY] = pixelToWebGL(x, y);
-    addPixel(
-      webglX, 
-      webglY, 
-    );
-  }
-
-  // Single point
   if (x1 === x2 && y1 === y2) {
     adaptBresenhanToPixel(x1, y1);
     return components;
   }
 
-  // Vertical line
   if (dx === 0) {
     while (y1 !== y2) {
       adaptBresenhanToPixel(x1, y1);
       y1 += sy;
       components++;
     }
-
     adaptBresenhanToPixel(x2, y2);
     return components;
   }
 
-  // Horizontal line
   if (dy === 0) {
     while (x1 !== x2) {
       adaptBresenhanToPixel(x1, y1);
       x1 += sx;
       components++;
     }
-
     adaptBresenhanToPixel(x2, y2);
     return components;
   }
